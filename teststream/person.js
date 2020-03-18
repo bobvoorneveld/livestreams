@@ -5,9 +5,24 @@ class Person {
         this.y = y;
         this.velocity = p5.Vector.random2D();
         this.velocity.setMag(speed);
+        this.moving = random() < percentMoving;
+        this.infectious = random() < percentInfectedByStart;
+
+        this.daysSinceInfection = 0;
     }
 
     update(people) {
+        if (this.infectious) {
+            this.daysSinceInfection++;
+            if(this.daysSinceInfection > daysOfIllness) {
+                this.infectious = false;
+            }
+        }
+
+        if (!this.moving) {
+            return;
+        }
+
         this.x += this.velocity.x;
         this.y += this.velocity.y;
 
@@ -29,6 +44,14 @@ class Person {
             let distance = dist(this.x, this.y, other.x, other.y);
 
             if (distance <= personSize) {
+                if (this.infectious) {
+                    other.infectious = true;
+                }
+
+                if (other.infectious) {
+                    this.infectious = true;
+                }
+
                 let dx = other.x - this.x;
                 let dy = other.y - this.y;
                 let angle = atan2(dy, dx);
@@ -39,20 +62,28 @@ class Person {
 
                 this.velocity.x -= ax;
                 this.velocity.y -= ay;
-
                 this.velocity.setMag(speed);
 
-                other.velocity += ax;
-                other.velocity += ay;
-
+                other.velocity.x += ax;
+                other.velocity.y += ay;
                 this.velocity.setMag(speed);
             }
         }
     }
 
+    isImmune() {
+        return this.daysSinceInfection > daysOfIllness;
+    }
+
     show() {
         noStroke();
-        fill(0, 200, 0);
+        if (this.infectious) {
+            fill(200, 0, 0);
+        } else if (this.daysSinceInfection > 0) {
+            fill(0, 0, 200);
+        } else {
+            fill(0, 200, 0);
+        }
         ellipse(this.x, this.y, personSize, personSize);
     }
 }
