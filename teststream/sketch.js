@@ -1,8 +1,12 @@
+let personSize = 10;
+let speed = 1;
+let crowdSize = 200;
+
 let people = [];
 
 function setup() {
   createCanvas(800, 800);
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < crowdSize; i++) {
     let person = new Person(floor(random(width)), floor(random(height)));
     people.push(person);
   }

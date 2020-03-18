@@ -1,6 +1,3 @@
-let personSize = 10;
-let speed = 1;
-
 class Person {
 
     constructor(x, y) {
@@ -11,54 +8,51 @@ class Person {
     }
 
     update(people) {
-        if (this.newVelocity) {
-            this.velocity = this.newVelocity;
-            this.newVelocity = null;
-        }
-
         this.x += this.velocity.x;
         this.y += this.velocity.y;
 
-        if(this.x < 0) {
-            this.x = width;
-        } else if(this.x > width) {
-            this.x = 0;
+        if(this.x < 0 || this.x > width) {
+            this.velocity.x *= -1;
         }
 
-        if(this.y < 0) {
-            this.y = height;
-        } else if(this.y > height) {
-            this.y = 0;
+
+        if(this.y < 0 || this.y > height) {
+            this.velocity.y *= -1;
         }
 
         this.detectHit(people);
     }
 
     detectHit(people) {
-        let ourPosition = createVector(this.x, this.y);
         for (let other of people) {
             if (other === this) continue;
             let distance = dist(this.x, this.y, other.x, other.y);
 
-            if (distance <= personSize + 1) {
-                let otherPosition = createVector(other.x, other.y);
-                let distanceVector = p5.Vector.sub(otherPosition, ourPosition);
+            if (distance <= personSize) {
+                let dx = other.x - this.x;
+                let dy = other.y - this.y;
+                let angle = atan2(dy, dx);
+                let targetX = this.x + cos(angle) * personSize;
+                let targetY = this.y + sin(angle) * personSize;
+                let ax = (targetX - other.x) * 0.05;
+                let ay = (targetY - other.y) * 0.05;
 
-                let theta = distanceVector.heading();
-                let sine = sin(theta);
-                let cosine = cos(theta);
+                this.velocity.x -= ax;
+                this.velocity.y -= ay;
 
-                this.newVelocity = createVector();
-                this.newVelocity.x = cosine * distanceVector.x - sine * distanceVector.y;
-                this.newVelocity.y = cosine * distanceVector.y + sine * distanceVector.x;
-                this.newVelocity.setMag(speed);
+                this.velocity.setMag(speed);
+
+                other.velocity += ax;
+                other.velocity += ay;
+
+                this.velocity.setMag(speed);
             }
         }
     }
 
     show() {
         noStroke();
-        fill(100, 100, 0);
+        fill(0, 200, 0);
         ellipse(this.x, this.y, personSize, personSize);
     }
 }
