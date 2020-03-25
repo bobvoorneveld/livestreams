@@ -4,6 +4,8 @@ class Cell {
         this.y = y;
         this.size = size;
         this.visited = false;
+        this.active = false;
+        this.previousCell = undefined;
 
         // Walls
         this.showTop = true;
@@ -16,7 +18,11 @@ class Cell {
         let baseX = this.x * this.size;
         let baseY = this.y * this.size;
 
-        if(this.visited) {
+        if (this.active) {
+            fill(0, 0, 200);
+            noStroke();
+            rect(baseX, baseY, this.size, this.size);
+        } else if(this.visited) {
             fill(0, 200, 200);
             noStroke();
             rect(baseX, baseY, this.size, this.size);
@@ -24,6 +30,7 @@ class Cell {
 
         noFill();
         stroke(255);
+        strokeWeight(5);
 
         // Top
         if (this.showTop) {
@@ -49,34 +56,43 @@ class Cell {
     visitANeighbour() {
         let neighbours = grid.neighbours(this.x, this.y);
 
-        if (neighbours.length > 0) {
-            let index = random(neighbours.length);
-            let neighbour = neighbours.splice(index, 1)[0];
-
-            neighbour.visited = true;
-
-            // Top / Bottom
-            if (this.x == neighbour.x) {
-
-                if(this.y == neighbour.y + 1) {
-                    // Bottom
-                    this.showTop = false;
-                    neighbour.showBottom = false;
-                } else {
-                    // Top
-                    this.showBottom = false;
-                    neighbour.showTop = false;
-                }
-            } else {
-                if (this.x == neighbour.x - 1) {
-                    this.showRight = false;
-                    neighbour.showLeft = false;
-                } else {
-                    this.showLeft = false;
-                    neighbour.showRight = false;
-                }
-            }
-            return neighbour;
+        // If there are no neighbours, return to previous visited cell.
+        if (neighbours.length === 0) {
+            this.active = false;
+            this.previousCell.active = true;
+            return this.previousCell;
         }
+
+        // There are neighbours, choose one and set as active.
+        let index = random(neighbours.length);
+        let next = neighbours.splice(index, 1)[0];
+
+        this.active = false;
+        next.visited = true;
+        next.active = true;
+        next.previousCell = this;
+
+        // Top / Bottom
+        if (this.x == next.x) {
+
+            if(this.y == next.y + 1) {
+                // Bottom
+                this.showTop = false;
+                next.showBottom = false;
+            } else {
+                // Top
+                this.showBottom = false;
+                next.showTop = false;
+            }
+        } else {
+            if (this.x == next.x - 1) {
+                this.showRight = false;
+                next.showLeft = false;
+            } else {
+                this.showLeft = false;
+                next.showRight = false;
+            }
+        }
+        return next;
     }
 }

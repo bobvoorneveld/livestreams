@@ -5,8 +5,8 @@ class Grid {
 
         this.storage = [];
 
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
+        for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
                 this.storage.push(new Cell(i, j, cellSize));
             }
         }
@@ -22,12 +22,12 @@ class Grid {
     cell(x, y) {
         if (x < 0) return;
         if (y < 0) return;
-        if (x > this.cols) return;
-        if (y > this.rows) return;
-        return this.storage[y * this.cols + x];
+        if (x >= this.cols) return;
+        if (y >= this.rows) return;
+        return this.storage[x * this.cols + y];
     }
 
-    neighbours(y, x) {
+    neighbours(x, y) {
         let neighbours = [];
 
         let top = this.cell(x, y - 1);
