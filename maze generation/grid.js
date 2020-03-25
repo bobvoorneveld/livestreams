@@ -27,8 +27,9 @@ class Grid {
         return this.storage[y * this.cols + x];
     }
 
-    neighbours(x, y) {
+    neighbours(y, x) {
         let neighbours = [];
+
         let top = this.cell(x, y - 1);
         if (top && !top.visited) {
             neighbours.push(top);
@@ -46,7 +47,6 @@ class Grid {
         if (left && !left.visited) {
             neighbours.push(left);
         }
-
         return neighbours;
     }
 }

@@ -4,52 +4,79 @@ class Cell {
         this.y = y;
         this.size = size;
         this.visited = false;
+
+        // Walls
+        this.showTop = true;
+        this.showBottom = true;
+        this.showLeft = true;
+        this.showRight = true;
     }
 
     show() {
-        noFill();
-        stroke(255);
-
         let baseX = this.x * this.size;
         let baseY = this.y * this.size;
 
         if(this.visited) {
             fill(0, 200, 200);
+            noStroke();
             rect(baseX, baseY, this.size, this.size);
         }
 
+        noFill();
+        stroke(255);
+
         // Top
-        if (!this.topWallRemove) {
+        if (this.showTop) {
             line(baseX, baseY, baseX + this.size, baseY);
         }
 
         // Right
-        line(baseX + this.size, baseY, baseX + this.size, baseY + this.size);
+        if (this.showRight) {
+            line(baseX + this.size, baseY, baseX + this.size, baseY + this.size);
+        }
 
         // Bottom
-        if (!this.bottomWallRemove) {
+        if (this.showBottom) {
             line(baseX, baseY + this.size, baseX + this.size, baseY + this.size);
         }   
 
         // Left
-        line(baseX, baseY, baseX, baseY + this.size);
+        if (this.showLeft) {
+            line(baseX, baseY, baseX, baseY + this.size);
+        }
     }
 
-    neighbours() {
+    visitANeighbour() {
         let neighbours = grid.neighbours(this.x, this.y);
-        if (neighbours) {
-            let neighbour = random(neighbours);
+
+        if (neighbours.length > 0) {
+            let index = random(neighbours.length);
+            let neighbour = neighbours.splice(index, 1)[0];
+
             neighbour.visited = true;
 
+            // Top / Bottom
             if (this.x == neighbour.x) {
+
                 if(this.y == neighbour.y + 1) {
-                    this.topWallRemove = true;
-                    neighbour.bottomWallRemove = true;
+                    // Bottom
+                    this.showTop = false;
+                    neighbour.showBottom = false;
                 } else {
-                    this.bottomWallRemove = true;
-                    neighbour.topWallRemove = true;
+                    // Top
+                    this.showBottom = false;
+                    neighbour.showTop = false;
+                }
+            } else {
+                if (this.x == neighbour.x - 1) {
+                    this.showRight = false;
+                    neighbour.showLeft = false;
+                } else {
+                    this.showLeft = false;
+                    neighbour.showRight = false;
                 }
             }
+            return neighbour;
         }
     }
 }
