@@ -4,6 +4,7 @@ let cols = 20;
 let grid;
 let cellSize;
 let dragging = false;
+let shifting = false;
 let activeCell;
 let gameOver = false;
 
@@ -23,14 +24,19 @@ function draw() {
 
   if (activeCell) {
     activeCell.possibleSweep = false;
+    activeCell.possibleFlag = false;
     activeCell = undefined;
   }
 
-  if(dragging && !gameOver) {
+  if(dragging || shifting && !gameOver) {
     let x = floor(mouseX / cellSize);
     let y = floor(mouseY / cellSize);
     activeCell = grid.cell(x, y);
-    activeCell.possibleSweep = true;
+    if (shifting) {
+      activeCell.possibleFlag = true;
+    } else if (dragging) {
+      activeCell.possibleSweep = true;
+    }
   }
 
   grid.show();
@@ -43,5 +49,21 @@ function mousePressed() {
 function mouseReleased() {
   dragging = false;
 
-  gameOver = activeCell.sweep();
+  if (shifting) {
+    activeCell.flag();
+  } else {
+    gameOver = activeCell.sweep();
+  }
+}
+
+function keyPressed() {
+  if (keyCode === SHIFT) {
+    shifting = true;
+  }
+}
+
+function keyReleased() {
+  if (keyCode === SHIFT) {
+    shifting = false;
+  }
 }

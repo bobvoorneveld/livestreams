@@ -3,11 +3,13 @@ class Cell {
         this.x = x;
         this.y = y;
         this.size = size;
-        this.mine = random() < 0.10;
+        this.mine = random() < 0.05;
         this.mineCount = 0;
 
         this.possibleSweep = false;
+        this.possibleFlag = false;
         this.sweeped = false;
+        this.flagged = false;
     }
 
     setup() {
@@ -47,8 +49,27 @@ class Cell {
 
         if (this.sweeped) {
             // Show playfield
+        } else if(this.flagged) {
+            fill(51);
+            stroke(255);
+            strokeWeight(5);
+            rect(this.x * this.size, this.y * this.size, this.size, this.size);
+            
+            noStroke();
+            fill(0, 0, 255);
+            ellipse(
+                this.x * this.size + this.size / 2, 
+                this.y * this.size + this.size / 2, 
+                this.size / 2, 
+                this.size / 2
+            );    
+
         } else if(this.possibleSweep) {
             fill(0, 230, 0);
+            noStroke();
+            rect(this.x * this.size, this.y * this.size, this.size, this.size);    
+        } else if(this.possibleFlag) {
+            fill(255, 0, 0);
             noStroke();
             rect(this.x * this.size, this.y * this.size, this.size, this.size);    
         } else {
@@ -78,6 +99,7 @@ class Cell {
      * Otherwise, false, game is stil ok.
      */
     sweep() {
+        if (this.flagged) return false;
         if (this.mine) return true;
         if (this.sweeped) return false;
         this.sweeped = true;
@@ -110,5 +132,9 @@ class Cell {
         }
 
         return false;
+    }
+
+    flag() {
+        this.flagged = true;
     }
 }
