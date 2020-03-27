@@ -41,4 +41,6 @@ function mousePressed() {
 
 function mouseReleased() {
   dragging = false;
+
+  activeCell.sweep();
 }
