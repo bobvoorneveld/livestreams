@@ -48,4 +48,24 @@ class Grid {
             cell.show();
         }
     }
+
+    hasWon() {
+        let cellsWithMine = this.storage.filter(function(cell) {
+            return cell.mine;
+        })
+
+        let cellsNotFlagged = cellsWithMine.filter(function(cell) {
+            return !cell.flagged;
+        });
+
+        let cellsWithoutMine = this.storage.filter(function(cell) {
+            return !cell.mine;
+        });
+
+        let cellFlagged = cellsWithoutMine.filter(function(cell) {
+            return cell.flagged;
+        });
+
+        return cellsNotFlagged.length === 0 && cellFlagged.length === 0;
+    }
 }

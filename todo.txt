@@ -3,7 +3,7 @@ TODO:
 V raken van een mijn zorgt voor game over
 V vlaggetjes kunnen zetten op potentiele mijnen
 V vlaggetjes kunnen verwijderen
-- bepalen of er een win conditie is
+V bepalen of er een win conditie is
 
 Wish:
 - andere kleuren bij indicatie aantal mijnen

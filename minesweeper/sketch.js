@@ -54,6 +54,12 @@ function mouseReleased() {
   } else {
     gameOver = activeCell.sweep();
   }
+
+  let hasWon = grid.hasWon();
+
+  if(hasWon) {
+    alert('You have won!');
+  }
 }
 
 function keyPressed() {
