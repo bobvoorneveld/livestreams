@@ -5,6 +5,7 @@ let grid;
 let cellSize;
 let dragging = false;
 let activeCell;
+let gameOver = false;
 
 function setup() {
   createCanvas(800, 800);
@@ -25,7 +26,7 @@ function draw() {
     activeCell = undefined;
   }
 
-  if(dragging) {
+  if(dragging && !gameOver) {
     let x = floor(mouseX / cellSize);
     let y = floor(mouseY / cellSize);
     activeCell = grid.cell(x, y);
@@ -42,5 +43,5 @@ function mousePressed() {
 function mouseReleased() {
   dragging = false;
 
-  activeCell.sweep();
+  gameOver = activeCell.sweep();
 }

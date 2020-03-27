@@ -3,7 +3,7 @@ class Cell {
         this.x = x;
         this.y = y;
         this.size = size;
-        this.mine = random() < 0.05;
+        this.mine = random() < 0.10;
         this.mineCount = 0;
 
         this.possibleSweep = false;
@@ -57,14 +57,32 @@ class Cell {
             strokeWeight(5);
             rect(this.x * this.size, this.y * this.size, this.size, this.size);    
         }
+
+        if (gameOver) {
+            if (this.mine) {
+                noStroke();
+                fill(230, 0, 0);
+                ellipse(
+                    this.x * this.size + this.size / 2, 
+                    this.y * this.size + this.size / 2, 
+                    this.size / 2, 
+                    this.size / 2
+                );    
+            }
+        }
     }
 
+    /**
+     * Returns true if mine was hit (game over)
+     * 
+     * Otherwise, false, game is stil ok.
+     */
     sweep() {
-        if (this.mine) return false;
-        if (this.sweeped) return;
+        if (this.mine) return true;
+        if (this.sweeped) return false;
         this.sweeped = true;
 
-        if(this.mineCount > 0) return;
+        if(this.mineCount > 0) return false;
 
         let done = [this];
         let todo = grid.neighbors(this.x, this.y);
@@ -90,5 +108,7 @@ class Cell {
 
             todo.push(...neighborCells);
         }
+
+        return false;
     }
 }

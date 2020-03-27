@@ -1,0 +1,8 @@
+TODO:
+
+V raken van een mijn zorgt voor game over
+- vlaggetjes kunnen zetten op potentiele mijnen
+- bepalen of er een win conditie is
+
+Wish:
+- andere kleuren bij indicatie aantal mijnen
