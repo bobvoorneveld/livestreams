@@ -55,15 +55,16 @@ class Cell {
             strokeWeight(5);
             rect(this.x * this.size, this.y * this.size, this.size, this.size);
             
-            noStroke();
-            fill(0, 0, 255);
-            ellipse(
-                this.x * this.size + this.size / 2, 
-                this.y * this.size + this.size / 2, 
-                this.size / 2, 
-                this.size / 2
-            );    
-
+            if (!this.possibleFlag) {
+                noStroke();
+                fill(255, 255, 0);
+                ellipse(
+                    this.x * this.size + this.size / 2, 
+                    this.y * this.size + this.size / 2, 
+                    this.size / 2, 
+                    this.size / 2
+                );        
+            }
         } else if(this.possibleSweep) {
             fill(0, 230, 0);
             noStroke();
@@ -135,6 +136,6 @@ class Cell {
     }
 
     flag() {
-        this.flagged = true;
+        this.flagged = !this.flagged;
     }
 }
