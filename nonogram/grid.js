@@ -6,6 +6,8 @@ class Grid {
         this.horizontal = [];
         this.vertical = [];
         this.cellSize  = cellSize;
+        this.maxCellsHorizontal = 0;
+        this.maxCellsVertical = 0;
 
         this.storage = [];
 
@@ -16,15 +18,48 @@ class Grid {
         }
     }
 
-    cell(x, y) {
-        if (x < 0 || x >= this.cols) return;
-        if (y < 0 || y >= this.rows) return;
-        return this.storage[x + this.cols * y];
+    offsetCell(x, y) {
+        x = x - this.maxCellsHorizontal;
+        y = y - this.maxCellsVertical;
+
+        return this.cell(x, y);
     }
 
     setup() {
         this.calculateHorizontal();
         this.calculateVertical();
+
+        let columnSizes = this.vertical.map(function(col) { return col.length});
+        this.maxCellsVertical = max(columnSizes);
+
+        let rowSizes = this.horizontal.map(function(row) { return row.length});
+        this.maxCellsHorizontal = max(rowSizes);
+    }
+
+    show() {
+        this.showHorizontal();
+        this.showVertical();
+
+        for (let cell of this.storage) {
+            cell.show(this.maxCellsHorizontal, this.maxCellsVertical);
+        }
+    }
+
+    checkWinning() {
+        let solutionCells = this.storage.filter((cell) => cell.solution);
+        let nonActivatedCells = solutionCells.filter((cell) => !cell.activated);
+
+        return nonActivatedCells.length === 0;
+    }
+
+    /*********
+     * Private functions
+     */
+
+    cell(x, y) {
+        if (x < 0 || x >= this.cols) return;
+        if (y < 0 || y >= this.rows) return;
+        return this.storage[x + this.cols * y];
     }
 
     calculateHorizontal() {
@@ -73,67 +108,53 @@ class Grid {
         }
     }
 
-    show() {
-        let columnSizes = this.vertical.map(function(col) { return col.length});
-        let maxCellsVertical = max(columnSizes);
-
-        let rowSizes = this.horizontal.map(function(row) { return row.length});
-        let maxCellsHorizontal = max(rowSizes);
-
-        this.showHorizontal(maxCellsVertical, maxCellsHorizontal);
-        this.showVertical(maxCellsHorizontal, maxCellsVertical);
-
-        for (let cell of this.storage) {
-            cell.show(5, maxCellsVertical);
-        }
-    }
-
-    showHorizontal(yOffset, maxCellsHorizontal) {
+    showHorizontal() {
         for (let j=0; j < this.rows; j++) {
-            for(let i=0; i < maxCellsHorizontal; i++) {
+            for(let i=0; i < this.maxCellsHorizontal; i++) {
                 stroke(51);
                 fill(255);
                 strokeWeight(1);
                 rect(
                     i * this.cellSize, 
-                    (j + yOffset) * this.cellSize, 
+                    (j + this.maxCellsVertical) * this.cellSize, 
                     this.cellSize, 
                     this.cellSize
                 );
                 noStroke();
                 fill(51);
                 textAlign(CENTER, CENTER);
+                textSize(20);
                 if(this.horizontal[j][i]) {
                     text(this.horizontal[j][i],                     
                         i * this.cellSize + this.cellSize / 2, 
-                        (j + yOffset) * this.cellSize + this.cellSize / 2);
+                        (j + this.maxCellsVertical) * this.cellSize + this.cellSize / 2);
                 }
             }
         }
     }
 
-    showVertical(xOffset, maxCellsVertical) {
+    showVertical() {
         for (let i=0; i < this.cols; i++) {
-            for(let j=0; j < xOffset; j++) {
+            for(let j=0; j < this.maxCellsHorizontal; j++) {
                 stroke(51);
                 fill(255);
                 strokeWeight(1);
                 rect(
-                    (i + xOffset) * this.cellSize, 
+                    (i + this.maxCellsHorizontal) * this.cellSize, 
                     j * this.cellSize, 
                     this.cellSize, 
                     this.cellSize
                 );
                 noStroke();
                 fill(51);
+                textSize(20);
                 textAlign(CENTER, CENTER);
                 if(this.vertical[i][j]) {
                     text(this.vertical[i][j],                     
-                        (i + xOffset) * this.cellSize  + this.cellSize / 2, 
+                        (i + this.maxCellsHorizontal) * this.cellSize  + this.cellSize / 2, 
                         j * this.cellSize+ this.cellSize / 2);
                 }
             }
         }
-        return maxCellsVertical;
     }
 }

@@ -7,11 +7,12 @@ let solution = [
 ]
 
 let grid;
+let cellSize;
 
 function setup() {
   createCanvas(800, 800);
 
-  let cellSize = 40;
+  cellSize = 40;
   grid = new Grid(solution, cellSize);
   grid.setup();
 }
@@ -24,6 +25,20 @@ function draw() {
 }
 
 function mousePressed() {
+  let x = floor(mouseX / cellSize);
+  let y = floor(mouseY / cellSize);
 
+  let cell = grid.offsetCell(x, y);
+  if (mouseButton === RIGHT) {
+    cell.lock();
+  } else {
+    cell.activate();
+  }
+
+  let won = grid.checkWinning();
+
+  if (won) {
+    alert('You have won!');
+  }
 }
 
