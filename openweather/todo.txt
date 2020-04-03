@@ -1,0 +1,4 @@
+- openweather
+- jquery
+- bootstrap
+- fontawesome
