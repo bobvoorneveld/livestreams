@@ -9,7 +9,9 @@ function setup() {
     choosenLetters = [];
     lives = 10;
     solution = randomWord.map(() => '-');
-
+    $('#instruction').html('Hieronder kan je een letter invoeren.');
+    $('#letter-input').attr('disabled', false);
+    $('#reset').hide();
     updateUI();
 }
 
@@ -28,31 +30,35 @@ function updateUI() {
 
 function nextStep(letter) {
     if(choosenLetters.indexOf(letter) !== -1) {
-        alert('letter already choosen!');
+        $('#instruction').html('Letter al eerder gekozen!');
         $('#letter-input').val('');
         return;
     }
     choosenLetters.push(letter);
 
-    let correctLetter = false;
+    let correctLetters = 0;
     for (let i = 0; i < randomWord.length; i++) {
         if(letter === randomWord[i]) {
-            correctLetter = true;
+            correctLetters++;
             solution[i] = letter;
         }
     }
 
-    if(correctLetter) {
+    if(correctLetters > 0) {
         if(solution.filter((letter) => letter === '-').length === 0) {
-            setTimeout(() => {
-                alert('Je hebt gewonnen!');
-            }, 1);
+            $('#instruction').html('Je hebt gewonnen!');
+            $('#letter-input').attr('disabled', true);
+            $('#reset').show();
+        } else {
+            $('#instruction').html(`De letter '${letter}' kwam ${correctLetters} keer voor.`)
         }
     } else {
         lives--;
 
         if(lives < 1) {
-            alert('you\'re dead!');
+            $('#instruction').html('Je hebt helaas verloren, probeer het nog een keer!');
+            $('#letter-input').attr('disabled', true);
+            $('#reset').show();
         }
     }
 
@@ -71,7 +77,7 @@ $('#reset').on('click', () => {
 });
 
 function updateGallow(lives) {
-    if (lives < 0) return;
+    if (lives <= 0) return;
 
     let number = Math.abs(lives - 10);
     let imageName = `images/hangman${number}.png`;

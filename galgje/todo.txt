@@ -5,3 +5,4 @@ V plaatjes voor galgje
 - replace alerts in code to nice ui
 - random words
 - hint button
+- correcte letter niet tonen
