@@ -7,7 +7,7 @@ let solution;
 function setup() {
     randomWord = 'water'.split('');
     choosenLetters = [];
-    lives = 9;
+    lives = 10;
     solution = randomWord.map(() => '-');
 
     updateUI();
@@ -23,7 +23,7 @@ function updateUI() {
         $('#choosen-letters').html('Nog geen letters gekozen');
     }
 
-    $('#gallow').html('Aantal levens: ' + lives);
+    updateGallow(lives);
 }
 
 function nextStep(letter) {
@@ -69,6 +69,14 @@ $('#letter-input').keyup(() => {
 $('#reset').on('click', () => {
     setup();
 });
+
+function updateGallow(lives) {
+    if (lives < 0) return;
+
+    let number = Math.abs(lives - 10);
+    let imageName = `images/hangman${number}.png`;
+    $('#gallow-image').attr('src', imageName);
+}
 
 // Start the game
 setup();

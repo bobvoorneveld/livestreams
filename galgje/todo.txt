@@ -1,0 +1,7 @@
+Todo:
+
+V map function on String
+V plaatjes voor galgje
+- replace alerts in code to nice ui
+- random words
+- hint button
