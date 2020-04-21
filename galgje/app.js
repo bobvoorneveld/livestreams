@@ -5,7 +5,7 @@ let solution;
 
 
 function setup() {
-    randomWord = 'water'.split('');
+    randomWord = randomWords.random().split('');
     choosenLetters = [];
     lives = 10;
     solution = randomWord.map(() => '-');

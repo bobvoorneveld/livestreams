@@ -1,3 +1,8 @@
+Array.prototype.random = function() {
+    let index = Math.floor(Math.random() * this.length);
+    return this[index];
+}
+
 String.prototype.map = function(fn) {
     return this.split('').map(fn).join('');
 }
