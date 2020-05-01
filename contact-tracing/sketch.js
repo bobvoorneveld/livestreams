@@ -38,4 +38,5 @@ function sendOutCodes(person) {
     let uuids = person.uuids;
     other.sickCodes(uuids);
   }
+  console.log('contact matching done');
 }

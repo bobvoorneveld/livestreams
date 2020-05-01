@@ -7,17 +7,20 @@ class Person {
         this.velocity.setMag(speed);
         // Create random key every day
         this.uuids = [this.createUUID()];
+        this.broadcastingKey;
 
         // Create random key every 10 minutes that is broadcasted
-        this.broadcastingKey = this.createBroadcastingKey(this.uuids[this.uuids.length - 1]);
+        this.createBroadcastingKey(this.uuids[this.uuids.length - 1]).then((key) => {
+            this.broadcastingKey = key;
+        })
 
 
         setInterval(() => {
             this.uuids.push(this.createUUID());
         }, 10000);
 
-        setInterval(() => {
-            this.broadcastingKey = this.createBroadcastingKey(this.uuids[this.uuids.length - 1]);
+        setInterval(async () => {
+            this.broadcastingKey = await this.createBroadcastingKey(this.uuids[this.uuids.length - 1]);
         }, 1000);
 
         this.otherCodes = [];
@@ -100,7 +103,6 @@ class Person {
     async sickCodes(codes) {
         for (let code of codes) {
             for (let i = 0; i <= floor(frameCount / 100); i++) {
-                console.log(`${code}-${i}`);
                 let sha = await sha256(`${code}-${i}`);         
                 if (this.otherCodes.indexOf(sha) !== -1) {
                     this.wasInContactWithSickPerson = true;
